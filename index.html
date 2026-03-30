@@ -3,155 +3,125 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Geoportal Corregido</title>
-  
+  <title>Geoportal del Estudiante</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v10.8.0/ol.css">
-  
   <style>
     :root {
-      --primary: #0f4c81;
-      --primary-dark: #09304f;
-      --accent: #1ea7fd;
-      --bg: #f5f7fb;
-      --card: #ffffff;
-      --text: #1d2733;
-      --border: #d9e2ec;
-      --success: #157347;
+      --primary: #0f4c81; --primary-dark: #09304f; --accent: #1ea7fd;
+      --bg: #f5f7fb; --card: #ffffff; --text: #1d2733;
+      --muted: #5f6b7a; --border: #d9e2ec; --success: #157347;
       --shadow: 0 10px 24px rgba(15, 76, 129, 0.12);
     }
-
     * { box-sizing: border-box; }
-    body {
-      margin: 0; font-family: 'Segoe UI', sans-serif;
-      background: var(--bg); color: var(--text);
-    }
-
-    header {
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-      color: #fff; padding: 20px; position: sticky; top: 0; z-index: 1000;
-      box-shadow: var(--shadow);
-    }
-
-    .header-wrap { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
-
+    html, body { margin: 0; padding: 0; font-family: Arial, sans-serif; color: var(--text); background: var(--bg); }
+    
+    header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: #fff; padding: 22px 18px; position: sticky; top: 0; z-index: 1000; }
+    .header-wrap { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+    
     nav.tabs { display: flex; gap: 10px; }
-    .tab-btn {
-      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3);
-      color: #fff; padding: 10px 18px; border-radius: 25px; cursor: pointer; font-weight: 600;
-    }
+    .tab-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 10px 15px; border-radius: 999px; cursor: pointer; }
     .tab-btn.active { background: #fff; color: var(--primary); }
 
-    main { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
-    .panel { display: none; background: var(--card); padding: 25px; border-radius: 15px; box-shadow: var(--shadow); }
+    main { max-width: 1200px; margin: 24px auto; padding: 0 16px; }
+    .panel { display: none; background: var(--card); border-radius: 18px; padding: 24px; box-shadow: var(--shadow); border: 1px solid var(--border); }
     .panel.active { display: block; }
 
-    /* Estilos del Mapa */
-    #map { width: 100%; height: 500px; border-radius: 12px; border: 1px solid var(--border); }
+    #map { width: 100%; height: 500px; border-radius: 16px; border: 1px solid var(--border); }
+    .preview-wrap { background: #eee; border-radius: 16px; overflow: hidden; text-align: center; min-height: 400px; display: flex; align-items: center; justify-content: center; }
+    .preview-wrap img { max-width: 100%; height: auto; }
     
-    .wms-container { 
-      background: #eef2f7; border-radius: 12px; min-height: 450px; 
-      display: flex; align-items: center; justify-content: center; overflow: hidden;
-      border: 2px dashed var(--border);
-    }
-    .wms-container img { max-width: 100%; height: auto; }
-
-    .btn-group { margin-bottom: 20px; display: flex; gap: 10px; }
-    .btn {
-      background: var(--primary); color: white; border: none;
-      padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold;
-    }
+    .btn-row { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+    .btn { background: var(--primary); color: white; border: none; padding: 12px 18px; border-radius: 10px; cursor: pointer; font-weight: bold; }
     .btn-success { background: var(--success); }
-    
-    .coords { margin-top: 10px; font-family: monospace; font-size: 0.9rem; color: var(--primary-dark); }
   </style>
 </head>
 <body>
 
-  <header>
-    <div class="header-wrap">
-      <h2>Geoportal Civil</h2>
-      <nav class="tabs">
-        <button class="tab-btn active" data-target="p-inicio">Inicio</button>
-        <button class="tab-btn" data-target="p-capas">Capas WMS</button>
-        <button class="tab-btn" data-target="p-visor">Mapa Interactivo</button>
-      </nav>
+<header>
+  <div class="header-wrap">
+    <div>
+      <h1 style="margin:0">Geoportal del Estudiante</h1>
+      <p style="margin:5px 0 0; opacity:0.8">Ingeniería Civil y SIG</p>
     </div>
-  </header>
+    <nav class="tabs">
+      <button class="tab-btn active" data-target="cv">Curriculum</button>
+      <button class="tab-btn" data-target="capas">Capas WMS</button>
+      <button class="tab-btn" data-target="visor">Visor Mapa</button>
+    </nav>
+  </div>
+</header>
 
-  <main>
-    <section id="p-inicio" class="panel active">
-      <h1>Bienvenida al Geoportal</h1>
-      <p>Selecciona una pestaña para visualizar la información geográfica.</p>
+<main>
+  <section id="cv" class="panel active">
+    <h2>Perfil Profesional</h2>
+    <p>Ingeniera Civil enfocada en la gestión de recursos hídricos y metodologías BIM.</p>
     </section>
 
-    <section id="p-capas" class="panel">
-      <h3>Previsualización de Capas de GeoServer</h3>
-      <div class="btn-group">
-        <button class="btn layer-btn" data-layer="puntos">Puntos</button>
-        <button class="btn layer-btn" data-layer="lineas">Líneas</button>
-        <button class="btn btn-success layer-btn" data-layer="composicion">Composición Total</button>
-      </div>
-      <div class="wms-container">
-        <img id="wmsPreview" src="" alt="Elige una capa para verla">
-      </div>
-    </section>
+  <section id="capas" class="panel">
+    <h2>Previsualización de Capas GeoServer</h2>
+    <div class="btn-row">
+      <button class="btn layer-btn" data-layer="puntos">Puntos</button>
+      <button class="btn layer-btn" data-layer="lineas">Líneas</button>
+      <button class="btn btn-success layer-btn" data-layer="composicion">Composición</button>
+    </div>
+    <div class="preview-wrap">
+      <img id="wmsImg" src="" alt="Selecciona una capa">
+    </div>
+  </section>
 
-    <section id="p-visor" class="panel">
-      <h3>Visor Interactivo (OpenStreetMap)</h3>
-      <div id="map"></div>
-      <div class="coords" id="coords">Lat: 0.00, Lon: 0.00</div>
-    </section>
-  </main>
+  <section id="visor" class="panel">
+    <h2>Visor Cartográfico Interactivo</h2>
+    <div id="map"></div>
+    <p id="mouseCoordinates" style="background:#000; color:#fff; padding:5px; display:inline-block; margin-top:10px; border-radius:5px">Lat: 0, Lon: 0</p>
+  </section>
+</main>
 
-  <script src="https://cdn.jsdelivr.net/npm/ol@v10.8.0/dist/ol.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ol@v10.8.0/dist/ol.js"></script>
+<script>
+  // 1. FUNCIONAMIENTO DE LAS PESTAÑAS
+  const tabs = document.querySelectorAll('.tab-btn');
+  const panels = document.querySelectorAll('.panel');
 
-  <script>
-    // --- CONFIGURACIÓN ---
-    const GEOSERVER_URL = "https://idesinde.com/geoserver/wms";
-    const INITIAL_COORDS = [-78.50, -0.20]; // Quito
-
-    // 1. Manejo de Pestañas
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-        
-        btn.classList.add('active');
-        const target = document.getElementById(btn.dataset.target);
-        target.classList.add('active');
-
-        if(btn.dataset.target === 'p-visor') {
-            setTimeout(() => map.updateSize(), 200);
-        }
-      });
+  tabs.forEach(t => {
+    t.addEventListener('click', () => {
+      tabs.forEach(btn => btn.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      t.classList.add('active');
+      const target = document.getElementById(t.dataset.target);
+      target.classList.add('active');
+      
+      // ARREGLO: Esto hace que el mapa aparezca si estaba oculto
+      if(t.dataset.target === 'visor') {
+        setTimeout(() => map.updateSize(), 100);
+      }
     });
+  });
 
-    // 2. Lógica WMS
-    document.querySelectorAll('.layer-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const layer = btn.dataset.layer;
-        const url = `${GEOSERVER_URL}?service=WMS&version=1.1.0&request=GetMap&layers=${layer}&width=800&height=500&srs=EPSG:4326&format=image/png`;
-        document.getElementById('wmsPreview').src = url;
-      });
+  // 2. LÓGICA DE CAPAS WMS
+  const wmsImg = document.getElementById('wmsImg');
+  document.querySelectorAll('.layer-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const capa = btn.dataset.layer;
+      // URL de ejemplo (ajusta si tienes tu propio GeoServer)
+      wmsImg.src = `https://idesinde.com/geoserver/wms?service=WMS&version=1.1.0&request=GetMap&layers=${capa}&width=800&height=500&srs=EPSG:4326&format=image/png`;
     });
+  });
 
-    // 3. Mapa Interactivo
-    const map = new ol.Map({
-      target: 'map',
-      layers: [
-        new ol.layer.Tile({ source: new ol.source.OSM() })
-      ],
-      view: new ol.View({
-        center: ol.proj.fromLonLat(INITIAL_COORDS),
-        zoom: 12
-      })
-    });
+  // 3. INICIALIZAR EL MAPA (Arreglado)
+  const map = new ol.Map({
+    target: 'map',
+    layers: [ new ol.layer.Tile({ source: new ol.source.OSM() }) ],
+    view: new ol.View({
+      center: ol.proj.fromLonLat([-78.50, -0.20]), // Quito
+      zoom: 12
+    })
+  });
 
-    // Coordenadas en tiempo real
-    map.on('pointermove', (evt) => {
-      const coord = ol.proj.toLonLat(evt.coordinate);
-      document.getElementById('coords').innerHTML = `Lat: ${coord[1].toFixed(5)}, Lon: ${coord[0].toFixed(5)}`;
-    });
-  </script>
+  // COORDENADAS
+  map.on('pointermove', function (evt) {
+    const coords = ol.proj.toLonLat(evt.coordinate);
+    document.getElementById('mouseCoordinates').innerHTML = `Lat: ${coords[1].toFixed(5)}, Lon: ${coords[0].toFixed(5)}`;
+  });
+</script>
 </body>
 </html>
