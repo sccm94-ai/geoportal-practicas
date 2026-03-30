@@ -517,44 +517,31 @@
 
   <script src="https://cdn.jsdelivr.net/npm/ol@v10.8.0/dist/ol.js"></script>
   <script>
-    const APP_CONFIG = {
-      siteTitle: 'Geoportal del Estudiante',
-      contactEmail: 'estudiante@correo.com',
-
-      // URL base del GeoServer. Ejemplo:
-      // https://idesinde.servidor.xyz/geoserver
-      geoserverBaseUrl: 'https://TU-GEOSERVER/geoserver',
-
-      // Workspace donde están publicadas las capas.
-      workspace: 'TU_WORKSPACE',
-
-      // Si ya existe una composición/layer group, colócalo aquí. Si no existe, déjalo vacío.
-      // Ejemplo: 'mi_workspace:composicion_practica'
-      compositeLayerName: '',
-
-      // Extensión aproximada de tus capas para la imagen WMS y vista inicial del mapa.
-      // Formato: [minLon, minLat, maxLon, maxLat] en EPSG:4326
-      bbox4326: [-78.60, -0.45, -78.30, -0.05],
-
-      // Capas publicadas en GeoServer.
-      layers: {
-        puntos: {
-          title: 'Capa de puntos',
-          name: 'TU_WORKSPACE:capa_puntos',
-          description: 'Capa vectorial de puntos simbolizada en GeoServer.'
-        },
-        lineas: {
-          title: 'Capa de líneas',
-          name: 'TU_WORKSPACE:capa_lineas',
-          description: 'Capa vectorial de líneas simbolizada en GeoServer.'
-        },
-        poligonos: {
-          title: 'Capa de polígonos',
-          name: 'TU_WORKSPACE:capa_poligonos',
-          description: 'Capa vectorial de polígonos simbolizada en GeoServer.'
-        }
-      }
-    };
+ const APP_CONFIG = {
+  siteTitle: 'Geoportal del Estudiante',
+  contactEmail: 'sccm94@gmail.com',
+  geoserverBaseUrl: 'https://geoserver.idesinde.com:8443/geoserver',
+  workspace: 'Carpio',
+  compositeLayerName: 'Carpio:Sector_Hidraulico,Carpio:TuberiaDeAguaCHA3,Carpio:Hidrantes',
+  bbox4326: [-78.56, -0.33, -78.43, -0.20],
+  layers: {
+    puntos: {
+      title: 'Hidrantes',
+      name: 'Carpio:Hidrantes',
+      description: 'Capa de hidrantes.'
+    },
+    lineas: {
+      title: 'Tubería de agua',
+      name: 'Carpio:TuberiaDeAguaCHA3',
+      description: 'Capa de líneas de la red de distribución.'
+    },
+    poligonos: {
+      title: 'Sector hidráulico',
+      name: 'Carpio:Sector_Hidraulico',
+      description: 'Capa de polígonos del sector hidráulico.'
+    }
+  }
+};
 
     document.title = APP_CONFIG.siteTitle;
     document.getElementById('contactEmailText').textContent = APP_CONFIG.contactEmail;
