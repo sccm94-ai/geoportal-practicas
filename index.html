@@ -20,7 +20,6 @@
     }
 
     * { box-sizing: border-box; }
-
     html, body {
       margin: 0;
       padding: 0;
@@ -158,9 +157,7 @@
       margin: 0 0 4px;
     }
 
-    .muted {
-      color: var(--muted);
-    }
+    .muted { color: var(--muted); }
 
     .info-list {
       margin: 0;
@@ -365,8 +362,7 @@
           <p>
             <strong>Correo:</strong> sccm94@gmail.com<br>
             <strong>Teléfono:</strong> +593 9999 36431<br>
-            <strong>GitHub:</strong>
-            <a href="https://github.com/sccm94-ai" target="_blank" rel="noopener">github.com/sccm94-ai</a>
+            <strong>GitHub:</strong> <a href="https://github.com/sccm94-ai" target="_blank" rel="noopener">github.com/sccm94-ai</a>
           </p>
         </article>
 
@@ -379,17 +375,17 @@
             <li><strong>Posgrado:</strong> Especialista en Administración de Empresas</li>
             <li><strong>Institución:</strong> Universidad Andina Simón Bolívar</li>
             <li><strong>Año de graduación:</strong> 2022</li>
-            <li><strong>Competencias:</strong> QGIS, AutoCAD, AutoCAD Civil 3D, EPANET, SWMM, Autodesk, Storm and Sanitary Analysis, ArcGIS, CYPE, Proexcel, Microsoft Project, SAP IS-U, SAP ERP, ETABS.</li>
+            <li><strong>Competencias:</strong> QGIS, AutoCAD, AutoCAD Civil 3D, EPANET, SWMM, Autodesk, ArcGIS, CYPE, Proexcel, Microsoft Project, SAP IS-U, SAP ERP, ETABS.</li>
           </ul>
         </article>
 
         <article class="card">
           <span class="tag">Experiencia</span>
           <ul class="info-list">
-            <li>EPMAPS: Pasantías preprofesionales, septiembre 2016 - septiembre 2017. Reporte de órdenes de factibilidad técnica para acometidas de agua potable y alcantarillado, colaboración en documentos preparatorios y revisión de planos hidrosanitarios.</li>
-            <li>EPMAPS, Asistente, enero 2018 - diciembre 2020. Programación y reporte de órdenes de trabajo, inspecciones de campo, elaboración de presupuestos y revisión técnica de planos hidrosanitarios.</li>
-            <li>EPMAPS, Asistente técnico, diciembre 2020 - agosto 2024. Atención de solicitudes de reparación y falta de agua, inspecciones, presupuestos y supervisión de contratos.</li>
-            <li>EPMAPS, Jefe de unidad, septiembre 2024 - presente. Manejo de unidad operativa para operación y mantenimiento del sistema de distribución de agua potable dentro del DMQ.</li>
+            <li>EPMAPS: Pasantías preprofesionales, septiembre 2016 - septiembre 2017.</li>
+            <li>EPMAPS, Asistente, enero 2018 - diciembre 2020.</li>
+            <li>EPMAPS, Asistente técnico, diciembre 2020 - agosto 2024.</li>
+            <li>EPMAPS, Jefe de unidad, septiembre 2024 - presente.</li>
           </ul>
         </article>
 
@@ -423,19 +419,13 @@
 
       <div class="note">
         Esta sección usa OpenLayers para cambiar la visualización WMS sin depender de una imagen fija.
-        Si necesitas centrar mejor el área, cambia solo <code class="inline">bbox4326</code>.
       </div>
     </section>
 
     <section id="descargas" class="panel">
       <h2 class="section-title">Descarga de capas desde GeoServer</h2>
       <p class="section-subtitle">Cada capa puede descargarse en Shapefile, KML y GML usando servicios WFS del GeoServer.</p>
-
       <div id="downloadGrid" class="grid-3"></div>
-
-      <div class="note">
-        En GeoServer, el formato Shapefile usualmente se descarga como ZIP. KML y GML dependen de que el servicio WFS tenga habilitados esos formatos.
-      </div>
     </section>
 
     <section id="visor" class="panel">
@@ -446,27 +436,19 @@
         <div class="coord-box" id="mouseCoordinates">Lat: -, Lon: -</div>
         <button class="btn secondary" id="resetViewBtn">Restablecer vista</button>
       </div>
-
       <div id="map"></div>
       <div id="mapError" class="error-box"></div>
-
-      <div class="note">
-        La composición se realiza directamente en el HTML, apilando polígonos, líneas y puntos.
-        Así no dependes de un layer group en GeoServer.
-      </div>
     </section>
 
     <section id="contacto" class="panel">
       <h2 class="section-title">Contacto</h2>
       <p class="section-subtitle">Formulario para enviar un correo al usuario.</p>
-
       <div class="grid-2">
         <article class="card">
           <h3>Información de contacto</h3>
           <p><strong>Responsable:</strong> Sofía Carpio</p>
           <p><strong>Correo destino:</strong> <span id="contactEmailText">sccm94@gmail.com</span></p>
           <p><strong>Repositorio GitHub:</strong> <a href="https://github.com/sccm94-ai/geoportal-practicas" target="_blank" rel="noopener">github.com/sccm94-ai/geoportal-practicas</a></p>
-          <p class="muted">Al enviar el formulario, se abrirá el cliente de correo predeterminado del visitante con el mensaje listo para enviarse.</p>
         </article>
 
         <article class="card">
@@ -506,7 +488,6 @@
       siteTitle: 'Geoportal del Estudiante',
       contactEmail: 'sccm94@gmail.com',
       geoserverBaseUrl: 'https://geoserver.idesinde.com:8443/geoserver',
-      workspace: 'Carpio',
       bbox4326: [-78.525, -0.285, -78.485, -0.245],
       layers: {
         puntos: {
@@ -533,16 +514,15 @@
     const tabButtons = document.querySelectorAll('.tab-btn');
     const panels = document.querySelectorAll('.panel');
 
-    tabButtons.forEach(btn => {
+    tabButtons.forEach((btn) => {
       btn.addEventListener('click', () => {
-        tabButtons.forEach(b => b.classList.remove('active'));
-        panels.forEach(p => p.classList.remove('active'));
+        tabButtons.forEach((b) => b.classList.remove('active'));
+        panels.forEach((p) => p.classList.remove('active'));
         btn.classList.add('active');
         document.getElementById(btn.dataset.target).classList.add('active');
-
         setTimeout(() => {
-          if (window.mainMap) window.mainMap.updateSize();
           if (window.wmsPreviewMap) window.wmsPreviewMap.updateSize();
+          if (window.mainMap) window.mainMap.updateSize();
         }, 150);
       });
     });
@@ -552,8 +532,8 @@
         service: 'WFS',
         version: '1.0.0',
         request: 'GetFeature',
-        typeName,
-        outputFormat
+        typeName: typeName,
+        outputFormat: outputFormat
       });
       return `${APP_CONFIG.geoserverBaseUrl}/ows?${params.toString()}`;
     }
@@ -565,15 +545,13 @@
         { label: 'GML', value: 'GML2' }
       ];
 
-      const entries = Object.values(APP_CONFIG.layers);
       const grid = document.getElementById('downloadGrid');
       grid.innerHTML = '';
 
-      entries.forEach(layer => {
+      Object.values(APP_CONFIG.layers).forEach((layer) => {
         const card = document.createElement('article');
         card.className = 'card download-card';
-
-        const buttonsHtml = formats.map(fmt => {
+        const buttonsHtml = formats.map((fmt) => {
           const href = buildDownloadUrl(layer.name, fmt.value);
           return `<a class="btn" href="${href}" target="_blank" rel="noopener">${fmt.label}</a>`;
         }).join('');
@@ -584,7 +562,6 @@
           <div class="download-buttons">${buttonsHtml}</div>
           <p class="muted"><strong>Nombre publicado:</strong> ${layer.name}</p>
         `;
-
         grid.appendChild(card);
       });
     }
@@ -602,7 +579,8 @@
           serverType: 'geoserver',
           transition: 0
         }),
-        opacity: opacityValue
+        opacity: opacityValue,
+        visible: true
       });
     }
 
@@ -618,13 +596,8 @@
       puntos: createWmsLayer(APP_CONFIG.layers.puntos.name, 1)
     };
 
-    const previewBase = new ol.layer.Tile({
-      source: new ol.source.OSM()
-    });
-
-    const mainBase = new ol.layer.Tile({
-      source: new ol.source.OSM()
-    });
+    const previewBase = new ol.layer.Tile({ source: new ol.source.OSM() });
+    const mainBase = new ol.layer.Tile({ source: new ol.source.OSM() });
 
     const initialExtent = ol.proj.transformExtent(APP_CONFIG.bbox4326, 'EPSG:4326', 'EPSG:3857');
 
@@ -649,9 +622,7 @@
       target: 'map',
       layers: [mainBase, mainLayers.poligonos, mainLayers.lineas, mainLayers.puntos],
       view: mainView,
-      controls: ol.control.defaults().extend([
-        new ol.control.ScaleLine()
-      ])
+      controls: ol.control.defaults().extend([new ol.control.ScaleLine()])
     });
 
     window.wmsPreviewMap = wmsPreviewMap;
@@ -661,40 +632,29 @@
     mainView.fit(initialExtent, { padding: [40, 40, 40, 40], duration: 0, maxZoom: 18 });
 
     function setPreviewMode(mode) {
-      const info = document.getElementById('wmsInfo');
+      previewLayers.poligonos.setVisible(mode === 'poligonos' || mode === 'composicion');
+      previewLayers.lineas.setVisible(mode === 'lineas' || mode === 'composicion');
+      previewLayers.puntos.setVisible(mode === 'puntos' || mode === 'composicion');
 
+      const info = document.getElementById('wmsInfo');
       if (mode === 'puntos') {
-        previewLayers.poligonos.setVisible(false);
-        previewLayers.lineas.setVisible(false);
-        previewLayers.puntos.setVisible(true);
         info.innerHTML = `<strong>${APP_CONFIG.layers.puntos.title}</strong><br>${APP_CONFIG.layers.puntos.description}<br><br><strong>Capa:</strong> ${APP_CONFIG.layers.puntos.name}`;
       } else if (mode === 'lineas') {
-        previewLayers.poligonos.setVisible(false);
-        previewLayers.lineas.setVisible(true);
-        previewLayers.puntos.setVisible(false);
         info.innerHTML = `<strong>${APP_CONFIG.layers.lineas.title}</strong><br>${APP_CONFIG.layers.lineas.description}<br><br><strong>Capa:</strong> ${APP_CONFIG.layers.lineas.name}`;
       } else if (mode === 'poligonos') {
-        previewLayers.poligonos.setVisible(true);
-        previewLayers.lineas.setVisible(false);
-        previewLayers.puntos.setVisible(false);
         info.innerHTML = `<strong>${APP_CONFIG.layers.poligonos.title}</strong><br>${APP_CONFIG.layers.poligonos.description}<br><br><strong>Capa:</strong> ${APP_CONFIG.layers.poligonos.name}`;
       } else {
-        previewLayers.poligonos.setVisible(true);
-        previewLayers.lineas.setVisible(true);
-        previewLayers.puntos.setVisible(true);
-        info.innerHTML = `<strong>Composición de capas</strong><br>Vista conjunta de polígonos, líneas y puntos.`;
+        info.innerHTML = '<strong>Composición de capas</strong><br>Vista conjunta de polígonos, líneas y puntos.';
       }
 
       setTimeout(() => wmsPreviewMap.updateSize(), 100);
     }
 
-    document.querySelectorAll('.layer-btn').forEach(btn => {
+    document.querySelectorAll('.layer-btn').forEach((btn) => {
       btn.addEventListener('click', () => setPreviewMode(btn.dataset.layer));
     });
 
-    setPreviewMode('composicion');
-
-    mainMap.on('pointermove', function (event) {
+    mainMap.on('pointermove', (event) => {
       const coord = ol.proj.toLonLat(event.coordinate);
       const lon = coord[0].toFixed(6);
       const lat = coord[1].toFixed(6);
@@ -705,11 +665,8 @@
       mainView.fit(initialExtent, { padding: [40, 40, 40, 40], duration: 500, maxZoom: 18 });
     });
 
-    renderDownloadButtons();
-
-    document.getElementById('contactForm').addEventListener('submit', function (event) {
+    document.getElementById('contactForm').addEventListener('submit', (event) => {
       event.preventDefault();
-
       const nombre = document.getElementById('nombre').value.trim();
       const correo = document.getElementById('correo').value.trim();
       const asunto = document.getElementById('asunto').value.trim();
@@ -726,6 +683,9 @@
       const mailto = `mailto:${APP_CONFIG.contactEmail}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(body)}`;
       window.location.href = mailto;
     });
+
+    renderDownloadButtons();
+    setPreviewMode('composicion');
   </script>
 </body>
 </html>
