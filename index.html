@@ -2,13 +2,9 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Geoportal del Estudiante</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- OpenLayers v6 (estable con API clásica) -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@6.15.1/ol.css" />
-  <script src="https://cdn.jsdelivr.net/npm/ol@6.15.1/dist/ol.js"></script>
-
+  <title>Geoportal del Estudiante</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v10.8.0/ol.css">
   <style>
     :root{
       --primary:#0f4c81;
@@ -23,159 +19,562 @@
       --shadow:0 10px 24px rgba(15,76,129,.12);
     }
     *{box-sizing:border-box}
-    html,body{margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;color:var(--text);background:var(--bg);}
-    header{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;padding:18px;}
-    nav{display:flex;gap:10px;justify-content:center;margin-top:10px;}
-    nav button{padding:10px 14px;border:none;border-radius:8px;background:#fff;color:var(--primary-dark);font-weight:bold;cursor:pointer;}
-    nav button:hover{background:#e6f0ff;}
-    .section{display:none;max-width:1100px;margin:20px auto;background:#fff;padding:20px;border-radius:12px;box-shadow:var(--shadow);}
-    .active{display:block;}
-    #map{width:100%;height:520px;border-radius:12px;border:1px solid var(--border);}
-    .btn{padding:10px 12px;border:none;border-radius:8px;background:var(--primary);color:#fff;cursor:pointer;margin:5px;}
-    .btn:hover{background:var(--primary-dark);}
-    .coord{margin-top:10px;font-family:monospace;color:var(--primary-dark);}
-    form{display:flex;flex-direction:column;gap:10px;}
-    input,textarea{padding:10px;border-radius:8px;border:1px solid #ccc;}
+    html,body{
+      margin:0;
+      padding:0;
+      font-family:Arial,Helvetica,sans-serif;
+      color:var(--text);
+      background:var(--bg);
+      scroll-behavior:smooth;
+    }
+    header{
+      background:linear-gradient(135deg,var(--primary) 0%,var(--primary-dark) 100%);
+      color:#fff;
+      padding:22px 18px;
+      box-shadow:var(--shadow);
+      position:sticky;
+      top:0;
+      z-index:1000;
+    }
+    .header-wrap{
+      max-width:1200px;
+      margin:0 auto;
+      display:flex;
+      gap:18px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .header-title h1{margin:0;font-size:1.8rem}
+    .header-title p{margin:6px 0 0;opacity:.95;font-size:.98rem}
+    nav.tabs{display:flex;flex-wrap:wrap;gap:10px}
+    nav.tabs button{
+      border:1px solid rgba(255,255,255,.28);
+      background:rgba(255,255,255,.08);
+      color:#fff;
+      padding:10px 14px;
+      border-radius:999px;
+      cursor:pointer;
+      transition:.2s ease;
+      font-weight:600;
+    }
+    nav.tabs button:hover,
+    nav.tabs button.active{
+      background:#fff;
+      color:var(--primary-dark);
+    }
+    main{
+      max-width:1200px;
+      margin:24px auto 40px;
+      padding:0 16px;
+    }
+    .panel{
+      display:none;
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      padding:24px;
+      margin-bottom:20px;
+    }
+    .panel.active{display:block}
+    .section-title{margin-top:0;color:var(--primary);font-size:1.6rem}
+    .section-subtitle{color:var(--muted);margin-top:-8px;margin-bottom:20px}
+    .grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+    .grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+    .card{
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:18px;
+      background:#fff;
+    }
+    .tag{
+      display:inline-block;
+      background:#eef6ff;
+      color:var(--primary);
+      border:1px solid #cfe6ff;
+      border-radius:999px;
+      padding:6px 10px;
+      font-size:.82rem;
+      font-weight:700;
+      margin-bottom:10px;
+    }
+    .cv-name{font-size:1.5rem;margin:0 0 4px}
+    .muted{color:var(--muted)}
+    .info-list{margin:0;padding-left:18px;line-height:1.6}
+    .btn-row,.download-buttons{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
+    .btn,button.btn{
+      background:var(--primary);
+      color:#fff;
+      border:none;
+      border-radius:10px;
+      padding:11px 14px;
+      font-weight:700;
+      cursor:pointer;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      transition:transform .15s ease, background .2s ease;
+    }
+    .btn:hover,button.btn:hover{background:var(--primary-dark);transform:translateY(-1px)}
+    .btn.secondary{background:#6c757d}
+    .btn.success{background:var(--success)}
+    .preview-wrap{
+      border:1px solid var(--border);
+      border-radius:16px;
+      overflow:hidden;
+      background:#eef2f7;
+    }
+    .preview-meta{
+      padding:12px 14px;
+      font-size:.92rem;
+      color:var(--muted);
+      background:#fff;
+      border-top:1px solid var(--border);
+      word-break:break-word;
+      line-height:1.5;
+    }
+    #previewMap,#mainMap{
+      width:100%;
+      border:1px solid var(--border);
+      border-radius:16px;
+      overflow:hidden;
+      background:#eef2f7;
+    }
+    #previewMap{height:520px}
+    #mainMap{height:560px}
+    .map-tools{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:12px;
+      align-items:center;
+      margin-bottom:12px;
+    }
+    .coord-box{
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:10px 14px;
+      font-family:Consolas,monospace;
+      color:var(--primary-dark);
+      font-size:.95rem;
+    }
+    .download-card h3{margin-top:0;margin-bottom:10px;color:var(--primary)}
+    form.contact-form{display:grid;gap:14px}
+    .form-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+    label{font-weight:700;display:block;margin-bottom:6px}
+    input,textarea{
+      width:100%;
+      padding:12px 14px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      font:inherit;
+    }
+    textarea{resize:vertical;min-height:140px}
+    footer{text-align:center;color:var(--muted);padding:18px;font-size:.92rem}
+    .note{
+      border-left:4px solid var(--accent);
+      background:#f2f9ff;
+      padding:14px 16px;
+      border-radius:10px;
+      color:#22415f;
+      margin-top:14px;
+      line-height:1.5;
+    }
+    .error-box{
+      display:none;
+      margin-top:12px;
+      border-left:4px solid #dc3545;
+      background:#fff1f2;
+      color:#842029;
+      padding:12px 14px;
+      border-radius:10px;
+      line-height:1.5;
+    }
+    code.inline{
+      background:#eef3f8;
+      padding:2px 6px;
+      border-radius:6px;
+    }
+    @media (max-width:920px){
+      .grid-2,.grid-3,.form-row{grid-template-columns:1fr}
+      .map-tools{grid-template-columns:1fr}
+      #previewMap,#mainMap{height:460px}
+    }
   </style>
 </head>
-
 <body>
+  <header>
+    <div class="header-wrap">
+      <div class="header-title">
+        <h1>Geoportal del Estudiante</h1>
+        <p>Visor web en HTML con OpenLayers, servicios WMS/WFS y enlaces de descarga para GitHub Pages.</p>
+      </div>
+      <nav class="tabs" aria-label="Pestañas del geoportal">
+        <button class="tab-btn active" data-target="cv">Curriculum Vitae</button>
+        <button class="tab-btn" data-target="wms">Capas WMS</button>
+        <button class="tab-btn" data-target="descargas">Descargas</button>
+        <button class="tab-btn" data-target="visor">Visor OpenLayers</button>
+        <button class="tab-btn" data-target="contacto">Contacto</button>
+      </nav>
+    </div>
+  </header>
 
-<header>
-  <h1>Geoportal del Estudiante</h1>
-  <nav>
-    <button onclick="showSection('cv')">Curriculum</button>
-    <button onclick="showSection('visor')">Visor PRO</button>
-    <button onclick="showSection('contacto')">Contacto</button>
-  </nav>
-</header>
+  <main>
+    <section id="cv" class="panel active">
+      <h2 class="section-title">Curriculum Vitae</h2>
+      <p class="section-subtitle">Tarea 2. Arquitecturas Web en Servicios.</p>
 
-<!-- CV -->
-<div id="cv" class="section active">
-  <h2>Curriculum Vitae</h2>
-  <p><strong>Nombre:</strong> Sofía Carpio</p>
-  <p><strong>Profesión:</strong> Ingeniera Civil</p>
-  <p><strong>Correo:</strong> sccm94@gmail.com</p>
-</div>
+      <div class="grid-2">
+        <article class="card">
+          <span class="tag">Perfil</span>
+          <h3 class="cv-name">Sofia Carpio</h3>
+          <p class="muted">Ingeniera Civil • Quito, Ecuador</p>
+          <p>Ingeniera civil de profesión, dedicada al área del agua potable y saneamiento, con uso de aplicaciones para manejo de información geográfica relacionada a catastro de redes.</p>
+          <p>
+            <strong>Correo:</strong> sccm94@gmail.com<br>
+            <strong>Teléfono:</strong> +593 9999 36431<br>
+            <strong>GitHub:</strong> <a href="https://github.com/sccm94-ai" target="_blank" rel="noopener">github.com/sccm94-ai</a>
+          </p>
+        </article>
 
-<!-- VISOR -->
-<div id="visor" class="section">
-  <h2>Visor Cartográfico Profesional</h2>
+        <article class="card">
+          <span class="tag">Formación</span>
+          <ul class="info-list">
+            <li><strong>Carrera:</strong> Ingeniería Civil</li>
+            <li><strong>Institución:</strong> Universidad Central del Ecuador</li>
+            <li><strong>Año de graduación:</strong> 2019</li>
+            <li><strong>Posgrado:</strong> Especialista en Administración de Empresas</li>
+            <li><strong>Institución:</strong> Universidad Andina Simón Bolívar</li>
+            <li><strong>Año de graduación:</strong> 2022</li>
+            <li><strong>Competencias:</strong> QGIS, AutoCAD, AutoCAD Civil 3D, EPANET, SWMM, Autodesk, ArcGIS, CYPE, Microsoft Project, SAP IS-U, SAP ERP y ETABS.</li>
+          </ul>
+        </article>
 
-  <button class="btn" onclick="toggleLayer('lineas')">Tuberías</button>
-  <button class="btn" onclick="toggleLayer('poligonos')">Sectores</button>
-  <button class="btn" onclick="resetView()">Reset</button>
+        <article class="card">
+          <span class="tag">Experiencia</span>
+          <ul class="info-list">
+            <li>EPMAPS: Pasantías preprofesionales, septiembre 2016 - septiembre 2017.</li>
+            <li>EPMAPS, Asistente, enero 2018 - diciembre 2020.</li>
+            <li>EPMAPS, Asistente técnico, diciembre 2020 - agosto 2024.</li>
+            <li>EPMAPS, Jefe de unidad, septiembre 2024 - presente.</li>
+          </ul>
+        </article>
 
-  <div id="map"></div>
-  <div class="coord" id="coords">Lat: -, Lon: -</div>
-</div>
+        <article class="card">
+          <span class="tag">Objetivo</span>
+          <p>Presentar un geoportal web funcional que permita visualizar capas geográficas publicadas desde GeoServer, descargar información en varios formatos interoperables y ofrecer una interfaz clara para navegación, consulta y contacto.</p>
+        </article>
+      </div>
+    </section>
 
-<!-- CONTACTO -->
-<div id="contacto" class="section">
-  <h2>Contacto</h2>
-  <form onsubmit="sendMail(event)">
-    <input type="text" id="nombre" placeholder="Nombre" required>
-    <input type="email" id="correo" placeholder="Correo" required>
-    <input type="text" id="asunto" placeholder="Asunto" required>
-    <textarea id="mensaje" placeholder="Mensaje" required></textarea>
-    <button class="btn" type="submit">Enviar</button>
-  </form>
-</div>
+    <section id="wms" class="panel">
+      <h2 class="section-title">Visualización y cambio de imagen WMS</h2>
+      <p class="section-subtitle">Usa los botones para mostrar cada capa simbolizada y también la composición de las 3 capas.</p>
 
-<script>
+      <div class="btn-row">
+        <button class="btn layer-btn" data-layer="puntos">Ver capa de puntos</button>
+        <button class="btn layer-btn" data-layer="lineas">Ver capa de líneas</button>
+        <button class="btn layer-btn" data-layer="poligonos">Ver capa de polígonos</button>
+        <button class="btn success layer-btn" data-layer="composicion">Ver composición de capas</button>
+      </div>
 
-// navegación
-function showSection(id){
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  setTimeout(()=> map.updateSize(),200);
-}
+      <div id="previewMap"></div>
+      <div class="preview-meta" id="wmsInfo">Selecciona una capa para generar la vista WMS.</div>
+      <div id="wmsError" class="error-box"></div>
 
-// mapa base
-const osm = new ol.layer.Tile({
-  source: new ol.source.OSM()
-});
+      <div class="note">
+        Esta sección usa OpenLayers para cambiar la vista WMS. Si las capas aparecen muy a una esquina, solo ajusta el valor de <code class="inline">bbox4326</code>.
+      </div>
+    </section>
 
-// WMS layers
-const lineas = new ol.layer.Tile({
-  source: new ol.source.TileWMS({
-    url: 'https://geoserver.idesinde.com:8443/geoserver/Carpio/wms',
-    params: {LAYERS:'Carpio:TuberiaDeAguaCHA3',TILED:true},
-    serverType: 'geoserver'
-  }),
-  visible:false
-});
+    <section id="descargas" class="panel">
+      <h2 class="section-title">Descarga de capas desde GeoServer</h2>
+      <p class="section-subtitle">Cada capa puede descargarse en Shapefile, KML y GML usando servicios WFS del GeoServer.</p>
 
-const poligonos = new ol.layer.Tile({
-  source: new ol.source.TileWMS({
-    url: 'https://geoserver.idesinde.com:8443/geoserver/Carpio/wms',
-    params: {LAYERS:'Carpio:Sector_Hidraulico',TILED:true},
-    serverType: 'geoserver'
-  }),
-  visible:false
-});
+      <div id="downloadGrid" class="grid-3"></div>
 
-const map = new ol.Map({
-  target: 'map',
-  layers: [osm,lineas,poligonos],
-  view: new ol.View({
-    center: ol.proj.fromLonLat([-78.56,-0.29]),
-    zoom: 14
-  }),
-  controls: ol.control.defaults().extend([
-    new ol.control.ScaleLine()
-  ])
-});
+      <div class="note">
+        Shapefile normalmente se descarga como ZIP. KML y GML dependen de los formatos habilitados en WFS.
+      </div>
+    </section>
 
-// toggle layers
-function toggleLayer(tipo){
-  if(tipo==='lineas') lineas.setVisible(!lineas.getVisible());
-  if(tipo==='poligonos') poligonos.setVisible(!poligonos.getVisible());
-}
+    <section id="visor" class="panel">
+      <h2 class="section-title">Visor cartográfico en OpenLayers</h2>
+      <p class="section-subtitle">Mapa base OpenStreetMap con capas WMS, barra de escala y coordenadas en latitud/longitud.</p>
 
-// reset
-function resetView(){
-  map.getView().setCenter(ol.proj.fromLonLat([-78.56,-0.29]));
-  map.getView().setZoom(14);
-}
+      <div class="map-tools">
+        <div class="coord-box" id="mouseCoordinates">Lat: -, Lon: -</div>
+        <button class="btn secondary" id="resetViewBtn">Restablecer vista</button>
+      </div>
 
-// coords
-map.on('pointermove', function(evt){
-  const c = ol.proj.toLonLat(evt.coordinate);
-  document.getElementById('coords').innerText =
-    "Lat: "+c[1].toFixed(6)+" Lon: "+c[0].toFixed(6);
-});
+      <div id="mainMap"></div>
+      <div id="mapError" class="error-box"></div>
 
-// mail
-function sendMail(e){
-  e.preventDefault();
-  const nombre = document.getElementById('nombre').value;
-  const correo = document.getElementById('correo').value;
-  const asunto = document.getElementById('asunto').value;
-  const mensaje = document.getElementById('mensaje').value;
+      <div class="note">
+        La composición se realiza directamente en el HTML, sin depender de layer group en GeoServer.
+      </div>
+    </section>
 
-  const body = `Nombre: ${nombre}%0AEmail: ${correo}%0A%0A${mensaje}`;
-  window.location.href = `mailto:sccm94@gmail.com?subject=${encodeURIComponent(asunto)}&body=${body}`;
-}
+    <section id="contacto" class="panel">
+      <h2 class="section-title">Contacto</h2>
+      <p class="section-subtitle">Formulario para enviar un correo al usuario.</p>
 
-</script>
+      <div class="grid-2">
+        <article class="card">
+          <h3>Información de contacto</h3>
+          <p><strong>Responsable:</strong> Sofía Carpio</p>
+          <p><strong>Correo destino:</strong> <span id="contactEmailText">sccm94@gmail.com</span></p>
+          <p><strong>Repositorio GitHub:</strong> <a href="https://github.com/sccm94-ai/geoportal-practicas" target="_blank" rel="noopener">github.com/sccm94-ai/geoportal-practicas</a></p>
+        </article>
 
+        <article class="card">
+          <form id="contactForm" class="contact-form">
+            <div class="form-row">
+              <div>
+                <label for="nombre">Nombre</label>
+                <input id="nombre" name="nombre" type="text" placeholder="Tu nombre" required>
+              </div>
+              <div>
+                <label for="correo">Correo electrónico</label>
+                <input id="correo" name="correo" type="email" placeholder="tu.correo@ejemplo.com" required>
+              </div>
+            </div>
+            <div>
+              <label for="asunto">Asunto</label>
+              <input id="asunto" name="asunto" type="text" placeholder="Consulta sobre el geoportal" required>
+            </div>
+            <div>
+              <label for="mensaje">Mensaje</label>
+              <textarea id="mensaje" name="mensaje" placeholder="Escribe tu mensaje aquí" required></textarea>
+            </div>
+            <button class="btn" type="submit">Enviar correo</button>
+          </form>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Geoportal HTML para publicación en GitHub Pages.
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/ol@v10.8.0/dist/ol.js"></script>
+  <script>
+    const APP_CONFIG = {
+      siteTitle: 'Geoportal del Estudiante',
+      contactEmail: 'sccm94@gmail.com',
+      geoserverBaseUrl: 'https://geoserver.idesinde.com:8443/geoserver',
+      workspace: 'Carpio',
+
+      // Ajusta solo esto si quieres centrar mejor las capas
+      bbox4326: [-78.525, -0.285, -78.485, -0.245],
+
+      layers: {
+        puntos: {
+          title: 'Hidrantes',
+          name: 'Carpio:Hidrantes',
+          description: 'Capa de hidrantes.'
+        },
+        lineas: {
+          title: 'Tubería de agua',
+          name: 'Carpio:TuberiaDeAguaCHA3',
+          description: 'Capa de líneas de la red de distribución.'
+        },
+        poligonos: {
+          title: 'Sector hidráulico',
+          name: 'Carpio:Sector_Hidraulico',
+          description: 'Capa de polígonos del sector hidráulico.'
+        }
+      }
+    };
+
+    document.title = APP_CONFIG.siteTitle;
+    document.getElementById('contactEmailText').textContent = APP_CONFIG.contactEmail;
+
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const panels = document.querySelectorAll('.panel');
+
+    tabButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabButtons.forEach(b => b.classList.remove('active'));
+        panels.forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        const targetPanel = document.getElementById(btn.dataset.target);
+        if (targetPanel) targetPanel.classList.add('active');
+
+        setTimeout(() => {
+          if (window.previewMap) window.previewMap.updateSize();
+          if (window.mainMap) window.mainMap.updateSize();
+        }, 150);
+      });
+    });
+
+    function buildDownloadUrl(typeName, outputFormat) {
+      const params = new URLSearchParams({
+        service: 'WFS',
+        version: '1.0.0',
+        request: 'GetFeature',
+        typeName: typeName,
+        outputFormat: outputFormat
+      });
+      return `${APP_CONFIG.geoserverBaseUrl}/ows?${params.toString()}`;
+    }
+
+    function renderDownloadButtons() {
+      const formats = [
+        { label: 'Shapefile', value: 'shape-zip' },
+        { label: 'KML', value: 'application/vnd.google-earth.kml+xml' },
+        { label: 'GML', value: 'GML2' }
+      ];
+
+      const grid = document.getElementById('downloadGrid');
+      grid.innerHTML = '';
+
+      Object.values(APP_CONFIG.layers).forEach(layer => {
+        const card = document.createElement('article');
+        card.className = 'card download-card';
+
+        const buttonsHtml = formats.map(fmt => {
+          const href = buildDownloadUrl(layer.name, fmt.value);
+          return `<a class="btn" href="${href}" target="_blank" rel="noopener">${fmt.label}</a>`;
+        }).join('');
+
+        card.innerHTML = `
+          <h3>${layer.title}</h3>
+          <p>${layer.description}</p>
+          <div class="download-buttons">${buttonsHtml}</div>
+          <p class="muted"><strong>Nombre publicado:</strong> ${layer.name}</p>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function createWmsLayer(layerName, opacityValue) {
+      return new ol.layer.Tile({
+        source: new ol.source.TileWMS({
+          url: `${APP_CONFIG.geoserverBaseUrl}/wms`,
+          params: {
+            LAYERS: layerName,
+            FORMAT: 'image/png',
+            TRANSPARENT: true,
+            VERSION: '1.1.1'
+          },
+          serverType: 'geoserver',
+          transition: 0
+        }),
+        opacity: opacityValue,
+        visible: true
+      });
+    }
+
+    const previewBase = new ol.layer.Tile({ source: new ol.source.OSM() });
+    const previewPoligonos = createWmsLayer(APP_CONFIG.layers.poligonos.name, 0.45);
+    const previewLineas = createWmsLayer(APP_CONFIG.layers.lineas.name, 0.95);
+    const previewPuntos = createWmsLayer(APP_CONFIG.layers.puntos.name, 1.0);
+
+    const mainBase = new ol.layer.Tile({ source: new ol.source.OSM() });
+    const mainPoligonos = createWmsLayer(APP_CONFIG.layers.poligonos.name, 0.45);
+    const mainLineas = createWmsLayer(APP_CONFIG.layers.lineas.name, 0.95);
+    const mainPuntos = createWmsLayer(APP_CONFIG.layers.puntos.name, 1.0);
+
+    const initialExtent = ol.proj.transformExtent(APP_CONFIG.bbox4326, 'EPSG:4326', 'EPSG:3857');
+
+    const previewView = new ol.View({
+      center: ol.extent.getCenter(initialExtent),
+      zoom: 16
+    });
+
+    const mainView = new ol.View({
+      center: ol.extent.getCenter(initialExtent),
+      zoom: 16
+    });
+
+    window.previewMap = new ol.Map({
+      target: 'previewMap',
+      layers: [previewBase, previewPoligonos, previewLineas, previewPuntos],
+      view: previewView,
+      controls: ol.control.defaults()
+    });
+
+    window.mainMap = new ol.Map({
+      target: 'mainMap',
+      layers: [mainBase, mainPoligonos, mainLineas, mainPuntos],
+      view: mainView,
+      controls: ol.control.defaults().extend([
+        new ol.control.ScaleLine()
+      ])
+    });
+
+    previewView.fit(initialExtent, { padding: [30, 30, 30, 30], duration: 0, maxZoom: 18 });
+    mainView.fit(initialExtent, { padding: [40, 40, 40, 40], duration: 0, maxZoom: 18 });
+
+    function setPreviewMode(mode) {
+      const info = document.getElementById('wmsInfo');
+
+      if (mode === 'puntos') {
+        previewPoligonos.setVisible(false);
+        previewLineas.setVisible(false);
+        previewPuntos.setVisible(true);
+        info.innerHTML = `<strong>${APP_CONFIG.layers.puntos.title}</strong><br>${APP_CONFIG.layers.puntos.description}<br><br><strong>Capa:</strong> ${APP_CONFIG.layers.puntos.name}`;
+      } else if (mode === 'lineas') {
+        previewPoligonos.setVisible(false);
+        previewLineas.setVisible(true);
+        previewPuntos.setVisible(false);
+        info.innerHTML = `<strong>${APP_CONFIG.layers.lineas.title}</strong><br>${APP_CONFIG.layers.lineas.description}<br><br><strong>Capa:</strong> ${APP_CONFIG.layers.lineas.name}`;
+      } else if (mode === 'poligonos') {
+        previewPoligonos.setVisible(true);
+        previewLineas.setVisible(false);
+        previewPuntos.setVisible(false);
+        info.innerHTML = `<strong>${APP_CONFIG.layers.poligonos.title}</strong><br>${APP_CONFIG.layers.poligonos.description}<br><br><strong>Capa:</strong> ${APP_CONFIG.layers.poligonos.name}`;
+      } else {
+        previewPoligonos.setVisible(true);
+        previewLineas.setVisible(true);
+        previewPuntos.setVisible(true);
+        info.innerHTML = `<strong>Composición de capas</strong><br>Vista conjunta de polígonos, líneas y puntos.`;
+      }
+
+      setTimeout(() => {
+        if (window.previewMap) window.previewMap.updateSize();
+      }, 100);
+    }
+
+    document.querySelectorAll('.layer-btn').forEach(btn => {
+      btn.addEventListener('click', () => setPreviewMode(btn.dataset.layer));
+    });
+
+    setPreviewMode('composicion');
+    renderDownloadButtons();
+
+    window.mainMap.on('pointermove', function (event) {
+      const coord = ol.proj.toLonLat(event.coordinate);
+      document.getElementById('mouseCoordinates').textContent =
+        `Lat: ${coord[1].toFixed(6)}, Lon: ${coord[0].toFixed(6)}`;
+    });
+
+    document.getElementById('resetViewBtn').addEventListener('click', () => {
+      mainView.fit(initialExtent, { padding: [40, 40, 40, 40], duration: 500, maxZoom: 18 });
+    });
+
+    document.getElementById('contactForm').addEventListener('submit', function (event) {
+      event.preventDefault();
+      const nombre = document.getElementById('nombre').value.trim();
+      const correo = document.getElementById('correo').value.trim();
+      const asunto = document.getElementById('asunto').value.trim();
+      const mensaje = document.getElementById('mensaje').value.trim();
+
+      const body = [
+        `Nombre: ${nombre}`,
+        `Correo: ${correo}`,
+        '',
+        'Mensaje:',
+        mensaje
+      ].join('\n');
+
+      const mailto = `mailto:${APP_CONFIG.contactEmail}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(body)}`;
+      window.location.href = mailto;
+    });
+  </script>
 </body>
 </html>
-
-<div id="descargas" class="section">
-  <h2>Descarga de capas</h2>
-
-  <h3>Hidrantes</h3>
-  <a class="btn" href="data/Hidrantes.zip" download>Shapefile</a>
-  <a class="btn" href="data/hidCHA3.kmz" download>KMZ</a>
-
-  <h3>Tuberías</h3>
-  <a class="btn" href="data/TuberiaDeAguaCHA3_shp.zip" download>Shapefile</a>
-  <a class="btn" href="data/TuberíadeAguaCHA3.kmz" download>KMZ</a>
-
-  <h3>Sectores Hidráulicos</h3>
-  <a class="btn" href="data/SectoresHidraulicos.zip" download>Shapefile</a>
-  <a class="btn" href="data/SectoresHidraulicos.kml" download>KML</a>
-
-</div>
