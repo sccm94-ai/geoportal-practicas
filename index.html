@@ -517,7 +517,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/ol@v10.8.0/dist/ol.js"></script>
   <script>
- const APP_CONFIG = {
+const APP_CONFIG = {
   siteTitle: 'Geoportal del Estudiante',
   contactEmail: 'sccm94@gmail.com',
   geoserverBaseUrl: 'https://geoserver.idesinde.com:8443/geoserver',
@@ -584,8 +584,7 @@
         format: 'image/png',
         transparent: 'true'
       });
-      return `${APP_CONFIG.geoserverBaseUrl}/${APP_CONFIG.workspace}/wms?${params.toString()}`;
-    }
+     return `${APP_CONFIG.geoserverBaseUrl}/wms?${params.toString()}`;
 
     function updateWmsPreview(key) {
       let layerName;
@@ -619,8 +618,7 @@
         typeName,
         outputFormat
       });
-      return `${APP_CONFIG.geoserverBaseUrl}/${APP_CONFIG.workspace}/ows?${params.toString()}`;
-    }
+      return `${APP_CONFIG.geoserverBaseUrl}/ows?${params.toString()}`;
 
     function renderDownloadButtons() {
       const formats = [
@@ -662,7 +660,7 @@
 
     const wmsLayer = new ol.layer.Tile({
       source: new ol.source.TileWMS({
-        url: `${APP_CONFIG.geoserverBaseUrl}/${APP_CONFIG.workspace}/wms`,
+        url: `${APP_CONFIG.geoserverBaseUrl}/wms`,
         params: {
           'LAYERS': getCompositeLayerName(),
           'TILED': true,
